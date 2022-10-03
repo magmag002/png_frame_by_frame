@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>Upload</title>
+</head>
+<body>
+<form action="" method="POST" enctype="multipart/form-data" style="margin: 10px;">
+    <div hidden>{{ form }}</div>
+    {% csrf_token %}
+    <h2>最大1000件まで同時に画像を登録できます．</h2>
+    <p>ファイルの選択とデータの送信が完了したら，"動画を見る"を押してください．</p>
+    <p>現在の登録枚数：{{num}}</p>
+    <input type="file" multiple accept="image/*" multiple id="multiple-files">
+    <br>
+    <button id="sending" type="submit" class="sending" onclick="multipleFunction()">送信</button>
+    <br>
+    <a href = "{% url 'image_app:movie' %}">動画を見る</a>
+    <br>
+    <p></p>
+    <br>
+    <input type="submit" name="button" value="データの全削除"> 
+</form>
+
+<script type='text/javascript'>
+    function multipleFunction() {
+        for (let i = 0; i <document.getElementById('multiple-files').files.length; i++) {
+            const dt1 = new DataTransfer();
+            dt1.items.add(document.getElementById('multiple-files').files[i]);
+            document.getElementById("id_form-%number-files".replace("%number", i)).files = dt1.files;
+        }
+    }
+</script>
+
+{% comment %} <script type='text/javascript'>
+    function multipleFunction() {
+        for (let i = 0; i < document.getElementById('multiple-files').files.length; i++) {
+            const dt = new DataTransfer();
+            dt.items.add(document.getElementById('multiple-files').files[i]);
+            console.log(i)
+            document.getElementById("id_form-%number-files".replace("%number", i)).files = dt.files;
+        }
+    }
+</script> {% endcomment %}
+
+{% comment %} <a href = "{% url 'image_app:movie' %}">動画を見る</a><br>
+<p>※ホーム画面を押すと登録した画像のデータが削除されます．</p>
+<a href = "{% url 'image_app:index' %}">ホーム画面</a> 
+
+<button id="sending" type="submit" class="sending" onclick="multipleFunction()">送信</button>
+
+console.log(dt.files)
+            document.getElementById("id_form-%number-files".replace("%number", i)).files = dt.files;
+{% endcomment %}
+
+</body>
+</html>

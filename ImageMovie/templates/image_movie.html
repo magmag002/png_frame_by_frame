@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>Movie</title>
+</head>
+<body>
+{% comment %} <a href = "{% url 'image_app:index' %}">ホーム画面</a><br> {% endcomment %}
+<a href = "{% url 'image_app:upload' %}">動画のアップロードに戻る</a><br>
+<form action="" method="POST" enctype="multipart/form-data" style="margin: 10px;">
+
+    <div hidden>{{ form }}</div>
+    {% csrf_token %}
+    {% comment %} <input type="button" id="b1" value="再生" onclick="imgTimer(this.id);"/> {% endcomment %}
+    <h2>コマ送りの秒数を選択してから再生していてください．</h2>
+    <p>コマ送りの秒数[ms]は最大1000[ms],最小10[ms]です．</p>
+    <input type="number" id="koma_number" value="200" max="1000" min="10"/>
+    <button type="button" id="b2"/>再生</button>
+
+    <button type="button" id="b3"/>一コマ進む</button>
+    <button type="button" id="b4"/>一コマ戻る</button>
+
+    <div id="comment"></div>
+    <img src='/image/{{file}}' name = 'movie' >
+    <script>
+    img = new Array()
+    
+    {% for files in file_path %}
+    img.push('/image/{{files}}')
+    {% endfor %}
+
+    count = 0; //*2
+
+    {% comment %} imgTimer(); {% endcomment %}
+
+    //ボタンの処理
+    document.getElementById('b2').addEventListener(
+        'click' ,function() {
+            if (this.innerHTML==='再生'){
+                this.innerHTML = '停止';
+                imgTimer(document.getElementById('b2').innerHTML);
+            }else{
+                this.innerHTML = '再生';
+                imgTimer(document.getElementById('b2').innerHTML);
+            }
+            
+        }
+    )
+
+    //ボタンの処理
+    document.getElementById('b3').addEventListener(
+        'click' ,function() {
+            imgCount('b3');
+        }
+    )
+
+    //ボタンの処理
+    document.getElementById('b4').addEventListener(
+        'click' ,function() {
+            imgCount('b4');
+        }
+    )
+
+    function imgTimer(id) {
+
+        if (document.getElementById('b2').innerHTML==='再生'){
+            //画像番号
+            
+        //画像出力
+        document.movie.src = img[count]; //*5
+        //コメント出力
+	    document.getElementById("comment").innerHTML = img[count]; //*3
+        
+        }
+
+        else{
+           count++; //*3
+        //画像の枚数確認
+        if (count == {{len}}) count = 0; //*4
+        //画像出力
+        document.movie.src = img[count]; //*5
+        //コメント出力
+	    document.getElementById("comment").innerHTML = img[count]; //*3
+        //次のタイマー呼びだし
+        setTimeout("imgTimer(document.getElementById('b2').innerHTML)",document.getElementById("koma_number").value); //*6
+        }
+        
+    }
+
+    function imgCount(id) {
+        if (id==='b3'){
+            count++;
+            if (count === {{len}}) count = 0; //*4
+            //画像出力
+            document.movie.src = img[count]; //*5
+            //コメント出力
+            document.getElementById("comment").innerHTML = img[count]; //*3
+        }
+
+        if (id==='b4'){
+            count=count-1;
+            if (count === -1) count = {{len}}-1; //*4
+            //画像出力
+            document.movie.src = img[count]; //*5
+            //コメント出力
+            document.getElementById("comment").innerHTML = img[count]; //*3
+        }
+    }
+    </script>
+    </form>
+
+
+</body>
+</html>
